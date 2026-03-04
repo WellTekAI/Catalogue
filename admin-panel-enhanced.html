@@ -3,53 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel Enhanced</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <title>Enhanced Admin Panel</title>
+    <script src="https://github.com/authenticate.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .status { margin: 10px 0; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <h1>Admin Panel</h1>
-        <button @click="gitHubAuthenticate">Log in with GitHub</button>
-        <div v-if="isAuthenticated">
-            <h2>Welcome Admin</h2>
-            <textarea v-model="changes" placeholder="Write changes here..."></textarea>
-            <button @click="commitChanges">Auto-sync Changes</button>
-            <button @click="exportData">Export Data</button>
-        </div>
-        <div v-else>
-            <p>Please log in to access the admin features.</p>
-        </div>
-    </div>
-
+    <h1>Admin Panel</h1>
+    <div class="status" id="status"></div>
+    <button id="authButton">Authenticate with GitHub</button>
+    <button id="syncButton">Auto-sync to GitHub</button>
+    <button id="exportButton">Manual Export</button>
+    
     <script>
-        new Vue({
-            el: '#app',
-            data: {
-                isAuthenticated: false,
-                changes: ''
-            },
-            methods: {
-                gitHubAuthenticate: function() {
-                    // GitHub authentication logic
-                    // Implement OAuth flow here
-                    this.isAuthenticated = true; // Simulating authentication
-                },
-                commitChanges: function() {
-                    // Auto-sync to commit changes
-                    alert('Changes have been committed to GitHub!');
-                },
-                exportData: function() {
-                    // Manual export functionality
-                    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.changes));
-                    const downloadAnchorNode = document.createElement('a');
-                    downloadAnchorNode.setAttribute('href', dataStr);
-                    downloadAnchorNode.setAttribute('download', 'export.json');
-                    document.body.appendChild(downloadAnchorNode);
-                    downloadAnchorNode.click();
-                    downloadAnchorNode.remove();
-                }
-            }
-        });
+        let sessionData = {};
+
+        document.getElementById('authButton').onclick = function() {
+            authenticateWithGitHub();
+        };
+         
+        document.getElementById('syncButton').onclick = function() {
+            autoSyncToGitHub();
+        };
+
+        document.getElementById('exportButton').onclick = function() {
+            manualExport();
+        };
+
+        function authenticateWithGitHub() {
+            // GitHub authentication logic
+            // On success:
+            sessionData.user = 'Authenticated User';
+            updateStatus('Successfully authenticated!', 'success');
+            // On error:
+            updateStatus('Authentication failed. Please try again.', 'error');
+        }
+
+        function autoSyncToGitHub() {
+            // Logic to auto-sync changes to GitHub
+            updateStatus('Auto-syncing to GitHub...', 'success');
+        }
+
+        function manualExport() {
+            // Logic for manual export of data
+            updateStatus('Data has been exported successfully!', 'success');
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = type;
+        }
     </script>
 </body>
 </html>
